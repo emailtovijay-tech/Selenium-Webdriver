@@ -35,7 +35,6 @@ namespace Selenium_Webdriver
             }
 
             Thread.Sleep(2000);
-
             driver.Close();
 
         }
