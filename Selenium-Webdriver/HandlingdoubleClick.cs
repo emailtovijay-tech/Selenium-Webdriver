@@ -1,11 +1,7 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Interactions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Selenium_Webdriver
 {
@@ -35,6 +31,8 @@ namespace Selenium_Webdriver
            String Field2text = driver.FindElement(By.XPath("//input[@id='field2']")).GetAttribute("value");
 
             Assert.AreEqual(Field1text, Field2text, "Text is not copied after double click");
+
+            driver.Close();
         }
         }
 }
