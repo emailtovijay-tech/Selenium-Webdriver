@@ -25,10 +25,10 @@ namespace Selenium_Webdriver
             foreach (string tab in Alltabs)
 
                 if (tab != maintab)
-            {
+                {
                 driver.SwitchTo().Window(tab); // Switching to new tab
                     break;
-            }
+                }
 
             String Header = driver.FindElement(By.XPath("//h1[normalize-space()='SDET-QA Blog']")).Text;
             Assert.AreEqual(Header, "SDET-QA Blog");
@@ -36,5 +36,6 @@ namespace Selenium_Webdriver
             driver.Quit();
         }
 
-        }
-    }
+
+     }
+}

@@ -1,5 +1,7 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using System;
+using System.Reflection.Metadata;
 
 namespace Selenium_Webdriver
 {
@@ -16,21 +18,51 @@ namespace Selenium_Webdriver
             driver.Navigate().GoToUrl("https://testautomationpractice.blogspot.com/");
             driver.Manage().Window.Maximize();
 
+
             driver.FindElement(By.XPath("//button[@id='PopUp']")).Click();
 
-            var maintab = driver.CurrentWindowHandle;
-            var Alltabs = driver.WindowHandles;
+            Thread.Sleep(3000);
 
-            foreach (string tab in Alltabs)
+            // Getting all window handles in a collection
+            IReadOnlyCollection<string> windowsIDs = driver.WindowHandles;
 
-                if (tab != maintab)
+            //Converted it to List collection
+            List<string> windowsList = windowsIDs.ToList();
+
+            String ParentWindow = windowsList[0];
+
+            String ChildSeleniumwindow = windowsList[1];
+
+            String ChildPlaywritewindow = windowsList[2];
+
+            driver.SwitchTo().Window(ChildSeleniumwindow);
+            driver.Manage().Window.Maximize();
+
+            driver.SwitchTo().Window(ChildPlaywritewindow);
+            driver.Manage().Window.Maximize();
+
+            // If we have many windows then we can handle through for each loop
+
+
+            foreach (String winid in windowsIDs)
+            {
+                String title = driver.SwitchTo().Window(winid).Title;
+                Console.Write(title);
+
+                if (title.Contains("Playwright"))
                 {
-                    driver.SwitchTo().Window(tab); // Switching to new Window
-                    break;
+                    driver.Close();
                 }
 
-            driver.Manage().Window.Maximize();
+                
+            }
+
             driver.Quit();
+
+
+
+
+
 
 
         }
