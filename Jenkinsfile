@@ -25,34 +25,28 @@ pipeline {
         }
 
         stage('Run Tests') {
-            steps {
-                echo "Running tests..."
-                bat "cd Selenium-Webdriver && dotnet test --configuration Release /p:AllureResultsDirectory=${ALLURE_RESULTS_DIR}"
-            }
-        }
-
-        stage('Publish Allure Report') {
-            steps {
-                echo "Publishing Allure report..."
-                allure([
-                    includeProperties: false,
-                    jdk: '',
-                    results: [[path: "${ALLURE_RESULTS_DIR}"]]
-                ])
-            }
-        }
+    steps {
+        echo "Running tests..."
+        bat "cd Selenium-Webdriver && dotnet test --configuration Release --logger \"trx;LogFileName=TestResult.xml\" /p:AllureResultsDirectory=allure-results"
     }
+}
 
-    post {
-        always {
-            echo "Archiving test reports..."
-            junit '**/TestResult.trx'
-        }
-        success {
-            echo "Build and tests completed successfully!"
-        }
-        failure {
-            echo "Build failed or tests have errors."
-        }
+stage('Publish Allure Report') {
+    steps {
+        echo "Publishing Allure report..."
+        // ensure allure-results folder exists
+        bat "if not exist allure-results mkdir allure-results"
+        allure([
+            includeProperties: false,
+            jdk: '',
+            results: [[path: "Selenium-Webdriver/allure-results"]]
+        ])
+    }
+}
+
+post {
+    always {
+        echo "Archiving test reports..."
+        junit '**/Selenium-Webdriver/TestResult.xml'
     }
 }
