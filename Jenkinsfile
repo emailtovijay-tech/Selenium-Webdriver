@@ -7,10 +7,16 @@ pipeline {
 
     stages {
 
+        stage('Checkout') {
+            steps {
+                echo "Checking out the source code..."
+                checkout scm
+            }
+        }
+
         stage('Restore Dependencies') {
             steps {
                 echo "Restoring NuGet dependencies..."
-                // Navigate to the folder containing your .csproj
                 bat 'cd Selenium-Webdriver && dotnet restore'
                 bat 'cd Selenium-Webdriver && dotnet add package NUnit.Allure'
                 bat 'cd Selenium-Webdriver && dotnet add package Allure.Commons'
@@ -25,31 +31,30 @@ pipeline {
         }
 
         stage('Run Tests') {
-    steps {
-        echo "Running tests..."
-        bat "cd Selenium-Webdriver && dotnet test --configuration Release --logger \"trx;LogFileName=TestResult.xml\" /p:AllureResultsDirectory=allure-results"
-    }
-}
+            steps {
+                echo "Running tests..."
+                bat "cd Selenium-Webdriver && dotnet test --configuration Release /p:AllureResultsDirectory=%ALLURE_RESULTS_DIR%"
+            }
+        }
 
-stage('Publish Allure Report') {
-    steps {
-        echo "Publishing Allure report..."
-        // ensure allure-results folder exists
-        bat "if not exist allure-results mkdir allure-results"
-        allure([
-            includeProperties: false,
-            jdk: '',
-            results: [[path: "Selenium-Webdriver/allure-results"]]
-        ])
+        stage('Publish Allure Report') {
+            steps {
+                echo "Publishing Allure report..."
+                allure includeProperties: false, jdk: '', results: [[path: "${ALLURE_RESULTS_DIR}"]]
+            }
+        }
     }
-}
 
-post {
-    always {
-        echo "Archiving test reports..."
-        junit '**/Selenium-Webdriver/TestResult.xml'
+    post {
+        always {
+            echo "Archiving test results..."
+            junit '**/TestResults/*.xml'
+        }
+        success {
+            echo "Build and tests succeeded!"
+        }
+        failure {
+            echo "Build or tests failed."
+        }
     }
-}
-}
-
 }
