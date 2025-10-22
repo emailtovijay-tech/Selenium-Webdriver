@@ -3,7 +3,6 @@ using System.Threading;
 using Mailosaur.Models;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
-using static System.Net.WebRequestMethods;
 
 
 namespace MFAHandling
