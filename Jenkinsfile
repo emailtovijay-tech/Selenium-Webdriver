@@ -2,59 +2,66 @@ pipeline {
     agent any
 
     environment {
-        ALLURE_RESULTS_DIR = "allure-results"
+        DOTNET_CLI_HOME = "${env.WORKSPACE}"  // Avoid dotnet temp issues on Windows
     }
 
     stages {
-        stage('Checkout') {
+
+        stage('Checkout SCM') {
             steps {
+                echo "Checking out source code..."
                 checkout scm
             }
         }
 
         stage('Restore Dependencies') {
             steps {
-                bat 'cd Selenium-Webdriver && dotnet restore'
-                bat 'cd Selenium-Webdriver && dotnet add package NUnit --version 3.14.0'
-                bat 'cd Selenium-Webdriver && dotnet add package NUnit3TestAdapter --version 4.4.2'
-                bat 'cd Selenium-Webdriver && dotnet add package Microsoft.NET.Test.Sdk --version 18.0.0'
-                bat 'cd Selenium-Webdriver && dotnet add package NUnit.Allure'
-                bat 'cd Selenium-Webdriver && dotnet add package Allure.Commons'
+                echo "Restoring NuGet packages..."
+                bat '''
+                cd Selenium-Webdriver
+                dotnet restore
+                dotnet add package NUnit --version 3.14.0
+                dotnet add package NUnit3TestAdapter --version 4.4.2
+                dotnet add package Microsoft.NET.Test.Sdk --version 18.0.0
+                dotnet add package NUnit.Allure
+                dotnet add package Allure.Commons
+                '''
             }
         }
 
         stage('Build') {
             steps {
-                bat 'cd Selenium-Webdriver && dotnet build --configuration Release'
+                echo "Building project..."
+                bat '''
+                cd Selenium-Webdriver
+                dotnet build --configuration Release
+                '''
             }
         }
 
         stage('Run Tests') {
             steps {
-                bat """
-                cd Selenium-Webdriver && dotnet test --configuration Release \
-                /p:AllureResultsDirectory=%ALLURE_RESULTS_DIR% \
-                --logger "nunit;LogFilePath=TestResults\\result.xml"
-                """
+                echo "Running NUnit tests..."
+                bat '''
+                cd Selenium-Webdriver
+                dotnet test --configuration Release --results-directory TestResults --logger "nunit;LogFileName=TestResults\\result.xml"
+                '''
             }
         }
 
         stage('Publish Allure Report') {
             steps {
-                allure includeProperties: false, jdk: '', results: [[path: "${ALLURE_RESULTS_DIR}"]]
+                echo "Publishing Allure report..."
+                // Path to allure-results folder created by NUnit.Allure
+                allure includeProperties: false, jdk: '', results: [[path: 'Selenium-Webdriver/allure-results']]
             }
         }
     }
 
     post {
         always {
+            echo "Archiving test results..."
             junit 'Selenium-Webdriver/TestResults/*.xml'
-        }
-        success {
-            echo "Build and tests succeeded!"
-        }
-        failure {
-            echo "Build or tests failed."
         }
     }
 }
