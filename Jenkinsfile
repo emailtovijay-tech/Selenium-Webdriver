@@ -1,10 +1,6 @@
 pipeline {
 agent any
 
-```
-tools {
-    dotnet 'dotnet6'
-}
 
 environment {
     ALLURE_RESULTS_DIR = "allure-results"
@@ -66,6 +62,5 @@ post {
         echo "Build failed or tests have errors."
     }
 }
-```
 
 }
