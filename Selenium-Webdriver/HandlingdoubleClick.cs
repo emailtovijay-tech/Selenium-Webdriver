@@ -30,7 +30,7 @@ namespace Selenium_Webdriver
 
            String Field2text = driver.FindElement(By.XPath("//input[@id='field2']")).GetAttribute("value");
 
-            Assert.AreEqual(Field1text, Field2text, "Text is not copied after double click");
+            Assert.That(Field2text, Is.EqualTo(Field1text), "Text is not copied after double click");
 
             driver.Close();
         }
