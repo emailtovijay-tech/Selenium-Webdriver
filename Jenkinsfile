@@ -50,3 +50,4 @@ post {
         junit '**/Selenium-Webdriver/TestResult.xml'
     }
 }
+}
