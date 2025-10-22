@@ -80,7 +80,8 @@ namespace MFAHandling
                 driver.FindElement(By.XPath("//input[@id='signup_otp1']")).SendKeys(otp);
                 driver.FindElement(By.XPath("//div[@class='col l12 leeos194LoginButton']")).Click();
 
-            
+            driver.Close();
+
         }
     }
 }
