@@ -3,7 +3,7 @@ using System.Threading;
 using Mailosaur.Models;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
-
+using NUnit.Allure.Core;
 
 namespace MFAHandling
 {
@@ -21,6 +21,7 @@ namespace MFAHandling
         }
 
         [Test]
+        [Allure]
         public void TestMailExample()
         {
             // Generate a unique test email
@@ -83,5 +84,9 @@ namespace MFAHandling
             driver.Close();
 
         }
+    }
+
+    internal class AllureAttribute : Attribute
+    {
     }
 }
