@@ -40,14 +40,14 @@ pipeline {
         }
 
         stage('Run Tests') {
-            steps {
-                echo "Running NUnit tests..."
-                bat '''
-                cd Selenium-Webdriver
-                dotnet test --configuration Release --results-directory TestResults --logger "nunit;LogFileName=TestResults\\result.xml"
-                '''
-            }
-        }
+    steps {
+        echo "Running NUnit tests..."
+        bat '''
+        cd Selenium-Webdriver
+        dotnet test --configuration Release --results-directory TestResults --logger "trx;LogFileName=TestResults\\result.trx"
+        '''
+    }
+}
 
         stage('Publish Allure Report') {
             steps {
@@ -61,7 +61,7 @@ pipeline {
     post {
         always {
             echo "Archiving test results..."
-            junit 'Selenium-Webdriver/TestResults/*.xml'
+            junit 'Selenium-Webdriver/TestResults/*.trx'
         }
     }
 }
