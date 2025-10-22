@@ -34,7 +34,8 @@ stages {
         steps {
             echo "Running Selenium tests with Allure results..."
             // Runs tests and produces Allure JSON results
-            bat "dotnet test --configuration Release /p:CollectCoverage=false /p:AllureResultsDirectory=$(ALLURE_RESULTS_DIR)"
+             bat "dotnet test --configuration Release /p:AllureResultsDirectory=${ALLURE_RESULTS_DIR}"
+			
         }
     }
 
