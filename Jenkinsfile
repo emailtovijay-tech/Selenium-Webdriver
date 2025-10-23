@@ -2,68 +2,65 @@ pipeline {
     agent any
 
     environment {
-        // If dotnet is in PATH, you can skip this. Otherwise, set full path with quotes.
-        DOTNET_CMD = "dotnet"
-        // If you want to use DOTNET_HOME, wrap it with quotes:
-        // DOTNET_CMD = "\"C:\\Program Files\\dotnet\\dotnet.exe\""
+        DOTNET_ROOT = "C:\\Program Files\\dotnet"
     }
 
     stages {
-
-        stage('Checkout') {
+        stage('Checkout SCM') {
             steps {
-                echo "Checking out source code..."
-                git url: 'https://github.com/emailtovijay-tech/Selenium-Webdriver.git', branch: 'master'
+                echo 'Checking out source code...'
+                checkout scm
             }
         }
 
         stage('Restore Dependencies') {
             steps {
-                echo "Restoring NuGet packages..."
-                bat "${DOTNET_CMD} restore Selenium-Webdriver\\Selenium-Webdriver.csproj"
+                echo 'Restoring NuGet packages...'
+                bat "${env.DOTNET_ROOT}\\dotnet restore Selenium-Webdriver\\Selenium-Webdriver.csproj"
             }
         }
 
         stage('Build') {
             steps {
-                echo "Building project..."
-                bat "${DOTNET_CMD} build Selenium-Webdriver\\Selenium-Webdriver.csproj --configuration Release"
+                echo 'Building project...'
+                bat "${env.DOTNET_ROOT}\\dotnet build Selenium-Webdriver\\Selenium-Webdriver.csproj --configuration Release"
             }
         }
 
         stage('Run Tests') {
             steps {
-                echo "Running NUnit tests..."
-                bat "${DOTNET_CMD} test Selenium-Webdriver\\Selenium-Webdriver.csproj --configuration Release --logger \"trx;LogFileName=TestResults\\result.trx\""
+                echo 'Running NUnit tests...'
+                bat "${env.DOTNET_ROOT}\\dotnet test Selenium-Webdriver\\Selenium-Webdriver.csproj --configuration Release --logger \"trx;LogFileName=TestResults\\result.trx\""
             }
         }
 
         stage('Publish Test Results') {
             steps {
-                echo "Publishing test results to Jenkins..."
-                junit 'Selenium-Webdriver\\TestResults\\result.trx'
+                echo 'Publishing test results...'
+                // Publish NUnit test results (even if previous steps failed)
+                junit 'Selenium-Webdriver\\TestResults\\*.trx'
             }
         }
     }
 
-     post {
+    post {
         always {
             echo 'Cleaning workspace...'
             script {
                 try {
-                    cleanWs()
+                    cleanWs(disableDeferredWipeout: true)
                 } catch (err) {
-                    echo "Workspace cleanup failed, but ignoring: ${err}"
+                    echo "Workspace cleanup failed, ignoring: ${err}"
                 }
             }
         }
 
         success {
-            echo "Build and tests completed successfully!"
+            echo 'Pipeline completed successfully!'
         }
 
         failure {
-            echo "Build failed!"
+            echo 'Pipeline failed!'
         }
     }
 }
