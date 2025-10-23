@@ -19,7 +19,6 @@ namespace Selenium_Webdriver
 
             Thread.Sleep(3000);
 
-            
            // Uploading Single file using the ID locator and send the path in Sendkeys directly
 
             driver.FindElement(By.XPath("//input[@id='singleFileInput']")).SendKeys(@"C:\Users\user\Downloads\TestUploadFile.xls");
