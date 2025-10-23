@@ -52,8 +52,7 @@ pipeline {
                     includeProperties: false,
                     jdk: '',
                     results: [[path: "${env.ALLURE_RESULTS}"]],
-                    reportBuildPolicy: 'ALWAYS',
-                    timeout: 30
+                    reportBuildPolicy: 'ALWAYS'
                 ])
             }
         }
