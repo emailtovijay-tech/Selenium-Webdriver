@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DOTNET_ROOT = "C:\\Program Files\\dotnet"
-        ALLURE_RESULTS = "C:\\Users\\user\\.jenkins\\workspace\\Selenium-Webdriver\\allure-report"
+        ALLURE_RESULTS = "Selenium-Webdriver\\allure-results"
     }
 
     stages {
