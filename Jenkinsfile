@@ -3,12 +3,14 @@ pipeline {
 
     environment {
         DOTNET_ROOT = "C:\\Program Files\\dotnet"
+        ALLURE_RESULTS = "C:\\Users\\user\\.jenkins\\workspace\\Selenium-Webdriver\\allure-report"
     }
 
     stages {
-        stage('Checkout SCM') {
+        stage('Clean Workspace & Checkout') {
             steps {
-                echo 'Checking out source code...'
+                echo 'Cleaning workspace and checking out source code...'
+                deleteDir()
                 checkout scm
             }
         }
@@ -29,15 +31,30 @@ pipeline {
 
         stage('Run Tests') {
             steps {
-                echo 'Running NUnit tests...'
+                echo 'Running NUnit tests with Allure results...'
+                // Create folder for Allure results
+                bat "mkdir \"${env.ALLURE_RESULTS}\""
+                // Run tests with TRX output
                 bat "\"${env.DOTNET_ROOT}\\dotnet\" test Selenium-Webdriver\\Selenium-Webdriver.csproj --configuration Release --logger \"trx;LogFileName=TestResults\\result.trx\""
+                // Convert TRX to Allure results
+                // Requires: dotnet-allure package or adapter installed
+                bat "\"${env.DOTNET_ROOT}\\dotnet\" tool run allure generate Selenium-Webdriver\\TestResults --clean -o ${env.ALLURE_RESULTS}"
             }
         }
 
         stage('Publish Test Results') {
             steps {
-                echo 'Publishing test results...'
-                junit 'Selenium-Webdriver\\TestResults\\*.trx'
+                echo 'Publishing test results and Allure report...'
+                // Publish TRX results
+                junit allowEmptyResults: true, testResults: 'Selenium-Webdriver\\TestResults\\*.trx'
+                // Publish Allure report
+                allure([
+                    includeProperties: false,
+                    jdk: '',
+                    results: [[path: "${env.ALLURE_RESULTS}"]],
+                    reportBuildPolicy: 'ALWAYS',
+                    timeout: 30
+                ])
             }
         }
     }
@@ -45,21 +62,9 @@ pipeline {
     post {
         always {
             echo 'Cleaning workspace...'
-            script {
-                try {
-                    cleanWs(disableDeferredWipeout: true)
-                } catch (err) {
-                    echo "Workspace cleanup failed, ignoring: ${err}"
-                }
-            }
+            cleanWs(disableDeferredWipeout: true)
         }
-
-        success {
-            echo 'Pipeline completed successfully!'
-        }
-
-        failure {
-            echo 'Pipeline failed!'
-        }
+        success { echo 'Pipeline completed successfully!' }
+        failure { echo 'Pipeline failed!' }
     }
 }
