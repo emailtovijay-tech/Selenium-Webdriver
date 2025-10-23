@@ -46,10 +46,16 @@ pipeline {
         }
     }
 
-    post {
+     post {
         always {
-            echo "Cleaning workspace..."
-            cleanWs()
+            echo 'Cleaning workspace...'
+            script {
+                try {
+                    cleanWs()
+                } catch (err) {
+                    echo "Workspace cleanup failed, but ignoring: ${err}"
+                }
+            }
         }
 
         success {
