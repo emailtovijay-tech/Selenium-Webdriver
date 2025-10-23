@@ -1,9 +1,10 @@
-﻿using Mailosaur;
-using System.Threading;
+﻿using Allure.NUnit.Attributes;
+using Mailosaur;
 using Mailosaur.Models;
+using NUnit.Allure.Core;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
-using NUnit.Allure.Core;
+using System.Threading;
 
 namespace MFAHandling
 {
@@ -21,7 +22,7 @@ namespace MFAHandling
         }
 
         [Test]
-        
+        [AllureSuite("Login Tests")]
         public void TestMailExample()
         {
             // Generate a unique test email
