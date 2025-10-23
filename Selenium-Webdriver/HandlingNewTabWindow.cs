@@ -31,7 +31,9 @@ namespace Selenium_Webdriver
                 }
 
             String Header = driver.FindElement(By.XPath("//h1[normalize-space()='SDET-QA Blog']")).Text;
-            Assert.AreEqual(Header, "SDET-QA Blog");
+
+            Assert.That(Header, Is.EqualTo("SDET-QA Blog"), "Not matching");
+
 
             driver.Quit();
         }
