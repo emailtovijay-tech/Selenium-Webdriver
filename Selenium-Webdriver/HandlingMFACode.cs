@@ -21,6 +21,7 @@ namespace MFAHandling
         }
 
         [Test]
+        
         public void TestMailExample()
         {
             // Generate a unique test email
