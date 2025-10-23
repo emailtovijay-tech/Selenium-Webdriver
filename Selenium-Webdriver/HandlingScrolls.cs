@@ -22,6 +22,9 @@ namespace Selenium_Webdriver
             JS.ExecuteScript("window.scrollBy(0, 500);");
 
             // Scroll down to the bottom
+
+            Thread.Sleep(2000);
+
             JS.ExecuteScript("window.scrollTo(0, document.body.scrollHeight);");
 
             IWebElement element = driver.FindElement(By.XPath("//h2[normalize-space()='Footer Links']"));
