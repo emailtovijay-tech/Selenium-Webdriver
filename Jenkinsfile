@@ -53,7 +53,7 @@ pipeline {
             steps {
                 echo "Publishing Allure report..."
                 // Path to allure-results folder created by NUnit.Allure
-                allure includeProperties: false, jdk: '', results: [[path: 'Selenium-Webdriver/allure-results']]
+                allure includeProperties: false, jdk: '', results: [[path: 'allure-results']]
             }
         }
     }

@@ -21,7 +21,6 @@ namespace MFAHandling
         }
 
         [Test]
-        [Allure]
         public void TestMailExample()
         {
             // Generate a unique test email
@@ -74,7 +73,6 @@ namespace MFAHandling
              {
                  Console.WriteLine("No OTP found in email.");
              }
-            
 
            // Now enter OTP on the webpage (if there’s an input field for OTP)
 
@@ -84,9 +82,5 @@ namespace MFAHandling
             driver.Close();
 
         }
-    }
-
-    internal class AllureAttribute : Attribute
-    {
     }
 }
