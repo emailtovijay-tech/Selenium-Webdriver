@@ -15,6 +15,7 @@ namespace Selenium_Webdriver
         {
             // Launching the Browser
             IWebDriver driver = new ChromeDriver();
+            
 
             // Global implicit wait 10 seconds
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
