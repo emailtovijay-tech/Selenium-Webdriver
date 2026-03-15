@@ -14,6 +14,7 @@ namespace Selenium_Webdriver
 
             // Global implicit wait 10 seconds
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
+            
             driver.Navigate().GoToUrl("https://testautomationpractice.blogspot.com/");
             driver.Manage().Window.Maximize();
 
